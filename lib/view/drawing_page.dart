@@ -46,7 +46,7 @@ class DrawingPage extends HookWidget {
               height: getPixel(1000),
               drawingMode: drawingMode,
               selectedColor: selectedColor,
-              strokeSize: strokeSize,
+              strokeSize: getPixel(1),
               eraserSize: eraserSize,
               sideBarController: animationController,
               currentSketch: currentSketch,
@@ -69,7 +69,7 @@ class DrawingPage extends HookWidget {
                   child: Text(
                     "1000px",
                   ))),
-          Positioned(
+          /*  Positioned(
             top: kToolbarHeight + 50,
             // left: -5,
             child: SlideTransition(
@@ -91,7 +91,7 @@ class DrawingPage extends HookWidget {
               ),
             ),
           ),
-          _CustomAppBar(animationController: animationController),
+          _CustomAppBar(animationController: animationController), */
         ],
       ),
     );

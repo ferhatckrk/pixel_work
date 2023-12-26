@@ -14,7 +14,7 @@ class DrawingCanvas extends HookWidget {
   final double height;
   final double width;
   final ValueNotifier<Color> selectedColor;
-  final ValueNotifier<double> strokeSize;
+  final double strokeSize;
   final ValueNotifier<Image?> backgroundImage;
   final ValueNotifier<double> eraserSize;
   final ValueNotifier<DrawingMode> drawingMode;
@@ -65,7 +65,7 @@ class DrawingCanvas extends HookWidget {
         points: [offset],
         size: drawingMode.value == DrawingMode.eraser
             ? eraserSize.value
-            : strokeSize.value,
+            : strokeSize,
         color: drawingMode.value == DrawingMode.eraser
             ? kCanvasColor
             : selectedColor.value,
@@ -87,7 +87,7 @@ class DrawingCanvas extends HookWidget {
         points: points,
         size: drawingMode.value == DrawingMode.eraser
             ? eraserSize.value
-            : strokeSize.value,
+            : strokeSize,
         color: drawingMode.value == DrawingMode.eraser
             ? kCanvasColor
             : selectedColor.value,
@@ -106,7 +106,7 @@ class DrawingCanvas extends HookWidget {
         points: [],
         size: drawingMode.value == DrawingMode.eraser
             ? eraserSize.value
-            : strokeSize.value,
+            : strokeSize,
         color: drawingMode.value == DrawingMode.eraser
             ? kCanvasColor
             : selectedColor.value,
