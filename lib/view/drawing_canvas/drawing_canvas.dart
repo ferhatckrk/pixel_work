@@ -9,6 +9,7 @@ import 'package:pixel_work_1/main.dart';
 import 'package:pixel_work_1/view/drawing_canvas/models/drawing_mode.dart';
 import 'package:pixel_work_1/view/drawing_canvas/models/sketch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pixel_work_1/view/drawing_page.dart';
 
 class DrawingCanvas extends HookWidget {
   final double height;
@@ -57,26 +58,22 @@ class DrawingCanvas extends HookWidget {
     );
   }
 
-  void onPointerDown(PointerDownEvent details, BuildContext context) {
+/*   void onPointerDown(PointerDownEvent details, BuildContext context) {
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.position);
     currentSketch.value = Sketch.fromDrawingMode(
       Sketch(
         points: [offset],
-        size: drawingMode.value == DrawingMode.eraser
-            ? eraserSize.value
-            : strokeSize,
-        color: drawingMode.value == DrawingMode.eraser
-            ? kCanvasColor
-            : selectedColor.value,
+        size: strokeSize,
+        color: selectedColor.value,
         sides: polygonSides.value,
       ),
       drawingMode.value,
       filled,
     );
-  }
+  } */
 
-  void onPointerMove(PointerMoveEvent details, BuildContext context) {
+/*   void onPointerMove(PointerMoveEvent details, BuildContext context) {
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.position);
     final points = List<Offset>.from(currentSketch.value?.points ?? [])
@@ -94,16 +91,31 @@ class DrawingCanvas extends HookWidget {
         sides: polygonSides.value,
       ),
       drawingMode.value,
-      filled,
+      filled, S
     );
-  }
+  } */
 
-  void onPointerUp(PointerUpEvent details) {
-    allSketches.value = List<Sketch>.from(allSketches.value)
+  void onPointerUp(PointerUpEvent details, BuildContext context) {
+    /*    allSketches.value = List<Sketch>.from(allSketches.value)
       ..add(currentSketch.value!);
     currentSketch.value = Sketch.fromDrawingMode(
       Sketch(
         points: [],
+        size: strokeSize, 
+        color: selectedColor.value,
+        sides: polygonSides.value,
+      ),
+      drawingMode.value,
+      filled,
+    ); */
+
+    final box = context.findRenderObject() as RenderBox;
+    final offset = box.globalToLocal(details.position);
+
+    offset.dy + 100;
+    currentSketch.value = Sketch.fromDrawingMode(
+      Sketch(
+        points: [Offset(offset.dx - 50, offset.dy - 50)],
         size: strokeSize,
         color: selectedColor.value,
         sides: polygonSides.value,
@@ -141,9 +153,9 @@ class DrawingCanvas extends HookWidget {
 
   Widget buildCurrentPath(BuildContext context) {
     return Listener(
-      onPointerDown: (details) => onPointerDown(details, context),
+      // sonPointerDown: (details) => onPointerDown(details, context),
       //onPointerMove: (details) /* => onPointerMove(details, context) */,
-      onPointerUp: onPointerUp,
+      onPointerUp: (details) => onPointerUp(details, context),
       child: ValueListenableBuilder(
         valueListenable: currentSketch,
         builder: (context, sketch, child) {
@@ -175,8 +187,8 @@ class SketchPainter extends CustomPainter {
   });
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (backgroundImage != null) {
+  Future<void> paint(Canvas canvas, Size size) async {
+/*     if (backgroundImage != null) {  draw image olayı yani resim ekleme
       canvas.drawImageRect(
         backgroundImage!,
         Rect.fromLTWH(
@@ -188,25 +200,53 @@ class SketchPainter extends CustomPainter {
         Rect.fromLTWH(0, 0, size.width, size.height),
         Paint(),
       );
-    }
+    } */
     for (Sketch sketch in sketches) {
       final points = sketch.points;
       if (points.isEmpty) return;
 
       final path = Path();
-
+      /*
       path.moveTo(points[0].dx, points[0].dy);
       if (points.length < 2) {
         // If the path only has one line, draw a dot.
         log(points[0].dx.toString(), name: "dx");
-        log(points[0].dy.toString(), name: "dy");
-        path.addOval(
+        log(points[0].dy.toString(), name: "dy"); */
+
+/*         path.addOval(
           Rect.fromCircle(
             center: Offset(points[0].dx, points[0].dy),
-            radius: 1,
+            radius: 0,
           ),
-        );
+        ); 
+      }*/
+
+      Paint paint2 = Paint()
+        ..color = Colors.black
+        ..strokeCap = StrokeCap.butt
+        ..strokeWidth = 1
+        ..style = PaintingStyle.fill;
+
+      // 1 piksel nokta çizimi
+      Offset point = Offset(points[0].dx, points[0].dy);
+
+      canvas.drawPoints(PointMode.points, [point], paint2);
+
+      log(points[0].dx.toString(), name: "points[0].dx");
+      log(points[0].dy.toString(), name: "points[0].dy");
+
+/*       for (var y = 0; y < 1250; y++) { yukarıdan aşağı nokta atar
+        log(y.toString(), name: "y");
+        Paint paint2 = Paint()
+          ..color = Colors.black
+          ..strokeCap = StrokeCap.square
+          ..strokeWidth = getPixel(1)
+          ..style = PaintingStyle.fill;
+        Offset point = Offset(getPixel(100), getPixel(y.toDouble()));
+
+        canvas.drawPoints(PointMode.points, [point], paint2);
       }
+ */
 
       for (int i = 1; i < points.length - 1; ++i) {
         final p0 = points[i];

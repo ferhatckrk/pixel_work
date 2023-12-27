@@ -5,6 +5,8 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:inspector/inspector.dart';
+import 'package:magnifying_glass/magnifying_glass.dart';
 import 'package:pixel_work_1/main.dart';
 import 'package:pixel_work_1/view/drawing_canvas/drawing_canvas.dart';
 import 'package:pixel_work_1/view/drawing_canvas/models/drawing_mode.dart';
@@ -29,72 +31,103 @@ class DrawingPage extends HookWidget {
     ValueNotifier<Sketch?> currentSketch = useState(null);
     ValueNotifier<List<Sketch>> allSketches = useState([]);
 
+    ValueNotifier<int> diameter = ValueNotifier(150);
+    ValueNotifier<double> distortion = ValueNotifier(1.0);
+    ValueNotifier<double> magnification = ValueNotifier(1.2);
+    ValueNotifier<Offset> glassPosition = ValueNotifier(Offset.zero);
+
     final animationController = useAnimationController(
       duration: const Duration(milliseconds: 150),
       initialValue: 1,
     );
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            color: Colors.red,
-            width: double.maxFinite,
-            height: double.maxFinite,
-            child: DrawingCanvas(
-              width: getPixel(800),
-              height: getPixel(1250),
-              drawingMode: drawingMode,
-              selectedColor: selectedColor,
-              strokeSize: getPixel(0.01),
-              eraserSize: eraserSize,
-              sideBarController: animationController,
-              currentSketch: currentSketch,
-              allSketches: allSketches,
-              canvasGlobalKey: canvasGlobalKey,
-              filled: true,
-              polygonSides: polygonSides,
-              backgroundImage: backgroundImage,
+    return ValueListenableBuilder(
+      valueListenable: glassPosition,
+      builder: (context, value, _) => Scaffold(
+        body: RepaintBoundary(
+          child: GestureDetector(
+            onTertiaryLongPressDown: (details) {
+              glassPosition.value = details.localPosition;
+            },
+            onPanUpdate: (DragUpdateDetails details) {
+              glassPosition.value = details.localPosition;
+            },
+            child: Stack(
+              children: [
+                Container(
+                  height: 100,
+                  width: 100,
+                  color: Colors.red,
+                ),
+                Container(
+                  color: Colors.red,
+                  width: double.maxFinite,
+                  height: double.maxFinite,
+                  child: DrawingCanvas(
+                    width: getPixel(800),
+                    height: getPixel(1250),
+                    drawingMode: drawingMode,
+                    selectedColor: selectedColor,
+                    strokeSize: getPixel(0.01),
+                    eraserSize: eraserSize,
+                    sideBarController: animationController,
+                    currentSketch: currentSketch,
+                    allSketches: allSketches,
+                    canvasGlobalKey: canvasGlobalKey,
+                    filled: true,
+                    polygonSides: polygonSides,
+                    backgroundImage: backgroundImage,
+                  ),
+                ),
+                Positioned(
+                  left: value.dx - 100,
+                  top: value.dy - 100,
+                  child: const RawMagnifier(
+                    decoration: MagnifierDecoration(
+                      shape: CircleBorder(
+                        side: BorderSide(color: Colors.pink, width: 3),
+                      ),
+                    ),
+                    size: Size(100, 100),
+                    magnificationScale: 5,
+                  ),
+                ),
+
+                /*     Positioned(
+                  top: kToolbarHeight + 50, 
+                  // left: -5,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(-1, 0),
+                      end: Offset.zero,
+                    ).animate(animationController),
+                    child: CanvasSideBar(
+                      drawingMode: drawingMode,
+                      selectedColor: selectedColor,
+                      strokeSize: strokeSize,
+                      eraserSize: eraserSize,
+                      currentSketch: currentSketch,
+                      allSketches: allSketches,
+                      canvasGlobalKey: canvasGlobalKey,
+                      filled: filled,
+                      polygonSides: polygonSides,
+                      backgroundImage: backgroundImage,
+                    ),
+                  ),
+                ),
+                _CustomAppBar(animationController: animationController), */
+              ],
             ),
           ),
-          Positioned(
-              top: getPixel(1000) + 10,
-              left: getPixel(1000) / 2,
-              child: const Text("1000px")),
-          Positioned(
-              top: getPixel(1000) / 2,
-              left: getPixel(1000) + 10,
-              child: const RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    "1000px",
-                  ))),
-          /*     Positioned(
-            top: kToolbarHeight + 50, 
-            // left: -5,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(-1, 0),
-                end: Offset.zero,
-              ).animate(animationController),
-              child: CanvasSideBar(
-                drawingMode: drawingMode,
-                selectedColor: selectedColor,
-                strokeSize: strokeSize,
-                eraserSize: eraserSize,
-                currentSketch: currentSketch,
-                allSketches: allSketches,
-                canvasGlobalKey: canvasGlobalKey,
-                filled: filled,
-                polygonSides: polygonSides,
-                backgroundImage: backgroundImage,
-              ),
-            ),
-          ),
-          _CustomAppBar(animationController: animationController), */
-        ],
+        ),
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
   }
 }
 

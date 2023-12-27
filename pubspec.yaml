@@ -52,6 +52,8 @@ dependencies:
   file_picker: ^6.1.1
   flutter_screenutil: ^5.9.0
   dimension: ^0.1.7
+  magnifying_glass: ^2.1.0
+  inspector: ^2.1.0
  
 
 dev_dependencies:
