@@ -8,8 +8,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixel_work_1/main.dart';
 import 'package:pixel_work_1/view/drawing_canvas/models/drawing_mode.dart';
 import 'package:pixel_work_1/view/drawing_canvas/models/sketch.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pixel_work_1/view/drawing_page.dart';
 
 class DrawingCanvas extends HookWidget {
   final double height;
@@ -58,7 +56,7 @@ class DrawingCanvas extends HookWidget {
     );
   }
 
-/*   void onPointerDown(PointerDownEvent details, BuildContext context) {
+  void onPointerDown(PointerDownEvent details, BuildContext context) {
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.position);
     currentSketch.value = Sketch.fromDrawingMode(
@@ -71,7 +69,7 @@ class DrawingCanvas extends HookWidget {
       drawingMode.value,
       filled,
     );
-  } */
+  }
 
 /*   void onPointerMove(PointerMoveEvent details, BuildContext context) {
     final box = context.findRenderObject() as RenderBox;
@@ -115,7 +113,7 @@ class DrawingCanvas extends HookWidget {
     offset.dy + 100;
     currentSketch.value = Sketch.fromDrawingMode(
       Sketch(
-        points: [Offset(offset.dx - 50, offset.dy - 50)],
+        points: [Offset(offset.dx - 100, offset.dy - 100)],
         size: strokeSize,
         color: selectedColor.value,
         sides: polygonSides.value,
@@ -153,9 +151,9 @@ class DrawingCanvas extends HookWidget {
 
   Widget buildCurrentPath(BuildContext context) {
     return Listener(
-      // sonPointerDown: (details) => onPointerDown(details, context),
+      onPointerDown: (details) => onPointerDown(details, context),
       //onPointerMove: (details) /* => onPointerMove(details, context) */,
-      onPointerUp: (details) => onPointerUp(details, context),
+      //onPointerUp: (details) => onPointerUp(details, context),
       child: ValueListenableBuilder(
         valueListenable: currentSketch,
         builder: (context, sketch, child) {
@@ -188,7 +186,7 @@ class SketchPainter extends CustomPainter {
 
   @override
   Future<void> paint(Canvas canvas, Size size) async {
-/*     if (backgroundImage != null) {  draw image olayı yani resim ekleme
+    if (backgroundImage != null) {
       canvas.drawImageRect(
         backgroundImage!,
         Rect.fromLTWH(
@@ -200,37 +198,38 @@ class SketchPainter extends CustomPainter {
         Rect.fromLTWH(0, 0, size.width, size.height),
         Paint(),
       );
-    } */
+    }
     for (Sketch sketch in sketches) {
-      final points = sketch.points;
+      List<Offset> points = sketch.points;
       if (points.isEmpty) return;
 
       final path = Path();
-      /*
-      path.moveTo(points[0].dx, points[0].dy);
+
+      //    path.moveTo(points[0].dx, points[0].dy);
       if (points.length < 2) {
         // If the path only has one line, draw a dot.
         log(points[0].dx.toString(), name: "dx");
-        log(points[0].dy.toString(), name: "dy"); */
+        log(points[0].dy.toString(), name: "dy");
 
-/*         path.addOval(
+        path.addOval(
           Rect.fromCircle(
             center: Offset(points[0].dx, points[0].dy),
             radius: 0,
           ),
-        ); 
-      }*/
+        );
 
-      Paint paint2 = Paint()
-        ..color = Colors.black
-        ..strokeCap = StrokeCap.butt
-        ..strokeWidth = 1
-        ..style = PaintingStyle.fill;
+        Paint paint2 = Paint()
+          ..color = Colors.black
+          ..strokeCap = StrokeCap.butt
+          ..strokeWidth = 2 // getPixel(1)
+          ..style = PaintingStyle.fill;
 
-      // 1 piksel nokta çizimi
-      Offset point = Offset(points[0].dx, points[0].dy);
+        // 1 piksel nokta çizimi
+        Offset point = Offset(points[0].dx, points[0].dy);
+        points.add(point);
 
-      canvas.drawPoints(PointMode.points, [point], paint2);
+        canvas.drawPoints(PointMode.points, points, paint2);
+      }
 
       log(points[0].dx.toString(), name: "points[0].dx");
       log(points[0].dy.toString(), name: "points[0].dy");

@@ -80,16 +80,26 @@ class DrawingPage extends HookWidget {
                   ),
                 ),
                 Positioned(
-                  left: value.dx - 100,
-                  top: value.dy - 100,
-                  child: const RawMagnifier(
-                    decoration: MagnifierDecoration(
-                      shape: CircleBorder(
-                        side: BorderSide(color: Colors.pink, width: 3),
+                  left: value.dx - 200,
+                  top: value.dy - 200,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const RawMagnifier(
+                        decoration: MagnifierDecoration(
+                          shape: CircleBorder(
+                            side: BorderSide(color: Colors.pink, width: 3),
+                          ),
+                        ),
+                        size: Size(200, 200),
+                        magnificationScale: 10,
                       ),
-                    ),
-                    size: Size(100, 100),
-                    magnificationScale: 5,
+                      Container(
+                        height: 1,
+                        width: 1,
+                        color: Colors.black,
+                      )
+                    ],
                   ),
                 ),
 
