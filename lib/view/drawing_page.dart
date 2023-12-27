@@ -42,8 +42,8 @@ class DrawingPage extends HookWidget {
             width: double.maxFinite,
             height: double.maxFinite,
             child: DrawingCanvas(
-              width: getPixel(1000),
-              height: getPixel(1000),
+              width: getPixel(800),
+              height: getPixel(1250),
               drawingMode: drawingMode,
               selectedColor: selectedColor,
               strokeSize: getPixel(0.01),

@@ -23,7 +23,7 @@ class DrawingCanvas extends HookWidget {
   final ValueNotifier<List<Sketch>> allSketches;
   final GlobalKey canvasGlobalKey;
   final ValueNotifier<int> polygonSides;
-  final  bool  filled;
+  final bool filled;
 
   const DrawingCanvas({
     Key? key,
@@ -72,7 +72,7 @@ class DrawingCanvas extends HookWidget {
         sides: polygonSides.value,
       ),
       drawingMode.value,
-      filled ,
+      filled,
     );
   }
 
@@ -94,7 +94,7 @@ class DrawingCanvas extends HookWidget {
         sides: polygonSides.value,
       ),
       drawingMode.value,
-      filled ,
+      filled,
     );
   }
 
@@ -104,16 +104,12 @@ class DrawingCanvas extends HookWidget {
     currentSketch.value = Sketch.fromDrawingMode(
       Sketch(
         points: [],
-        size: drawingMode.value == DrawingMode.eraser
-            ? eraserSize.value
-            : strokeSize,
-        color: drawingMode.value == DrawingMode.eraser
-            ? kCanvasColor
-            : selectedColor.value,
+        size: strokeSize,
+        color: selectedColor.value,
         sides: polygonSides.value,
       ),
       drawingMode.value,
-      filled ,
+      filled,
     );
   }
 
@@ -202,6 +198,8 @@ class SketchPainter extends CustomPainter {
       path.moveTo(points[0].dx, points[0].dy);
       if (points.length < 2) {
         // If the path only has one line, draw a dot.
+        log(points[0].dx.toString(), name: "dx");
+        log(points[0].dy.toString(), name: "dy");
         path.addOval(
           Rect.fromCircle(
             center: Offset(points[0].dx, points[0].dy),
@@ -223,7 +221,7 @@ class SketchPainter extends CustomPainter {
 
       Paint paint = Paint()
         ..color = sketch.color
-        ..strokeCap = StrokeCap.round;
+        ..strokeCap = StrokeCap.square;
 
       if (!sketch.filled) {
         paint.style = PaintingStyle.stroke;
